@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # root directory
-SCRIPT_DIR=$(pwd)/
+SCRIPT_DIR=$(pwd)
 PROJECT_DIR=$(pwd)/${PROJECT_NAME}
 
 # vivado install path

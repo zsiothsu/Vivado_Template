@@ -191,8 +191,8 @@ function vivado_gen_synth() {
 
         for xci in ${VIVADO_XCI_FILELIST[@]}; do
             if [[ -f ${SRC_DIR}/${xci} ]]; then
-                xci=\$\{SrcDir\}/${xci}
                 xci_basename=$(basename ${xci} .xci)
+                xci=\$\{SrcDir\}/${xci}
                 eval "echo \"${template_read_xci}\"" >> ${VIVADO_SYN_SCRIPT}
             else
                 echo -e ${COLOR_ERROR}"[error] file ${SRC_DIR}/${xci} dosen't exist. "${COLOR_RESET}
@@ -207,8 +207,8 @@ function vivado_gen_synth() {
     #############
     if [[ -n "${VIVADO_BD_FILE}" ]]; then
         if [[ -f ${VIVADO_BD_FILE} ]]; then
-            bd=\$\{SrcDir\}/${VIVADO_BD_FILE}
             bd_name=`basename ${bd} .bd`
+            bd=\$\{SrcDir\}/${VIVADO_BD_FILE}
             eval "echo \"${template_read_bd}\"" >> ${VIVADO_SYN_SCRIPT}
         fi
     fi
@@ -441,7 +441,6 @@ function vcs_gen_compile() {
     if [[ -n "${VIVADO_INC_PATH_FILELIST}" ]]; then
         for line in ${VIVADO_INC_PATH_FILELIST[@]}; do
             if [[ -d ${SRC_DIR}/${line} ]]; then
-                line=\$\{SrcDir\}/${line}
                 inc_dir="${SRC_DIR}/${line}"
                 echo "+incdir+\"${inc_dir}\" \\" >> ${VCS_COMPILE_SCRIPT}
             else
@@ -550,7 +549,6 @@ function iverilog_gen_compile() {
     if [[ -n "${VIVADO_INC_PATH_FILELIST}" ]]; then
         for line in ${VIVADO_INC_PATH_FILELIST[@]}; do
             if [[ -d ${SRC_DIR}/${line} ]]; then
-                line=\$\{SrcDir\}/${line}
                 inc_dir="${SRC_DIR}/${line}"
                 echo "-I ${inc_dir} \\" >> ${IVERILOG_COMPILE_SCRIPT}
             else

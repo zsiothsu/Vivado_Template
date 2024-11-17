@@ -1,0 +1,1 @@
+verdi -f ${VCS_SIM_FILELIST} -ssf -nologo ./${VCS_FSDB_FILE}

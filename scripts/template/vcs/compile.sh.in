@@ -1,0 +1,9 @@
+vlogan \\
+-full64 \\
++v2k \\
+-work WORK \\
+-sverilog \\
++define+__VCS__ \\
++define+SIMULATION_EN \\
+-timescale=${VCS_TIMESCALE} \\
+-error=noMPD \\

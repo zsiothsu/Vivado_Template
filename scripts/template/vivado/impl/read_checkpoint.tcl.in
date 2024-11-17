@@ -1,0 +1,1 @@
+read_checkpoint \$SynOutputDir/\${top_${top}}.post_synth.dcp

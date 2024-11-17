@@ -1,0 +1,9 @@
+vcs \\
+-full64 \\
+-sverilog \\
+-timescale=${VCS_TIMESCALE} \\
+-lca \\
+-debug_access+all \\
+-t ps \\
+-licqueue \\
+${VCS_WORK_LIB_NAME}.${VCS_SIM_TOP_MODULE} ${VCS_WORK_LIB_NAME}.glbl -o ./simv

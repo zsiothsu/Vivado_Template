@@ -1,0 +1,15 @@
+#################################################
+#                synth $top
+#################################################
+set top_${top} ${top}
+synth_design -top \${top_${top}} ${VIVADO_SYNTH_OPT}
+write_checkpoint -force \$SynOutputDir/\${top_${top}}.post_synth.dcp
+write_verilog -force \$SynOutputDir/\${top_${top}}.post_synth.synth_netlist.v
+write_verilog -mode funcsim -force \$SynOutputDir/\${top_${top}}.post_synth.funcsim_synth_netlist.v
+write_edif -security_mode all -force \$SynOutputDir/\${top_${top}}.edf
+write_xdc -force \$SynOutputDir/\${top_${top}}.post_synth.xdc
+report_utilization -file \$SynOutputDir/\${top_${top}}.post_synth.util.rpt
+report_timing_summary -file \$SynOutputDir/\${top_${top}}.post_synth.timing_summary.rpt
+# Run custom script to report critical timing paths
+reportCriticalPaths \$SynOutputDir/\${top_${top}}.post_synth.critpath_report.csv
+report_power -file \$SynOutputDir/\${top_${top}}.post_synth.power.rpt

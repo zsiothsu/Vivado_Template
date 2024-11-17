@@ -1,0 +1,26 @@
+#################################################
+#              impl $top
+#################################################
+# step1: link_design
+link_design -part \$part -top \${top_${top}}
+
+# step2: run placement and logic optimzation, report utilization and timing estimates, write checkpoint design
+opt_design ${VIVADO_OPT_OPT}
+place_design ${VIVADO_PLACE_OPT}
+phys_opt_design ${VIDODO_PHYS_OPT_OPT}
+write_checkpoint -force \$ImplOutputDir/\${top_${top}}.post_place.dcp
+report_timing_summary -file \$ImplOutputDir/\${top_${top}}.post_place.timing_summary.rpt
+
+# step3: run router, report actual utilization and timing, write checkpoint design, run drc, write verilog and xdc out
+route_design ${VIVADO_ROUTE_OPT_OPT}
+write_checkpoint -force \$ImplOutputDir/\${top_${top}}.post_route.dcp
+report_timing_summary -file \$ImplOutputDir/\${top_${top}}.post_route.timing_summary.rpt
+report_timing -sort_by group -max_paths 100 -path_type summary -file \$ImplOutputDir/\${top_${top}}.post_route.timing.rpt
+report_clock_utilization -file \$ImplOutputDir/\${top_${top}}.post_route.clock_util.rpt
+report_utilization -file \$ImplOutputDir/\${top_${top}}.post_route.util.rpt
+report_power -file \$ImplOutputDir/\${top_${top}}.post_route.power.rpt
+write_verilog -force \$ImplOutputDir/\${top_${top}}.post_route.impl_netlist.rpt
+write_xdc -no_fixed_only -force \$ImplOutputDir/\${top_${top}}.post_route.impl.xdc
+
+# step4: generate a bit stream
+write_bitstream -force \$ImplOutputDir/\${top_${top}}.bit

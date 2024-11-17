@@ -1,0 +1,14 @@
+#################################################
+#             project properties
+#################################################
+set device              $VIVADO_DEVICE
+set package             $VIVADO_PACKAGE
+set speed               $VIVADO_SPEED
+set part                \$device\$package\$speed
+
+set SrcDir              $SRC_DIR
+set SynOutputDir        $VIVADO_SYN_DIR
+set ImplOutputDir       $VIVADO_IMPL_DIR
+
+set_part \$part
+set top_${top} ${top}

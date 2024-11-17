@@ -1,0 +1,12 @@
+#################################################
+#             read block design
+#################################################
+#source ${bd_tcl}
+read_bd ${bd}
+open_bd_design ${bd}
+current_bd_design ${bd}
+upgrade_ip [get_bd_cells -hierarchical * ]
+reset_target all [get_files ${bd}]
+generate_target all [get_files ${bd}] -force
+make_wrapper -files [get_files ${bd}] -top
+read_verilog ${VIVADO_BD_GENERATE_DIR}/${bd_name}/hdl/${bd_name}_wrapper.v

@@ -400,7 +400,7 @@ function _vcs_gen_rtl_sim_filelist() {
         for xci in ${VIVADO_XCI_FILELIST[@]}; do
             if [[ -f ${SRC_DIR}/${xci} ]]; then
                 xci_basename=`basename ${xci} .xci`
-                ip_sim_file=${VIVADO_IP_GENERATE_DIR}/${xci_basename}/sim/${xci_basename}.v
+                ip_sim_file=${VIVADO_IP_GENERATE_DIR}/${xci_basename}/${xci_basename}_sim_netlist.v
                 filelist_set="${filelist_set} ${ip_sim_file}"
             else
                 echo -e ${COLOR_ERROR}"[error] file ${SRC_DIR}/${xci} dosen't exist. "${COLOR_RESET}

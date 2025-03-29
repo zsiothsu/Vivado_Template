@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # root directory
-SCRIPT_DIR=$(pwd)
+SCRIPT_DIR=$(dirname $(readlink -f $(which $0)))
 PROJECT_DIR=$(pwd)/${PROJECT_NAME}
 
 # vivado install path
@@ -32,7 +32,8 @@ VIVADO_TEMPLATE_READ_CHECKPOINT=${VIVADO_TEMPLATE_DIR}/impl/read_checkpoint.tcl.
 VIVADO_TEMPLATE_READ_CHECKPOINT_LIST=${VIVADO_TEMPLATE_DIR}/impl/read_checkpoint_list.tcl.in
 VIVADO_TEMPLATE_READ_CHECKPOINT_HEADER=${VIVADO_TEMPLATE_DIR}/impl/read_checkpoint_header.tcl.in
 VIVADO_TEMPLATE_SYNTH=${VIVADO_TEMPLATE_DIR}/synth/synth.tcl.in
-VIVADO_TEMPLAT_IMPL=${VIVADO_TEMPLATE_DIR}/impl/impl.tcl.in
+VIVADO_TEMPLATE_IMPL=${VIVADO_TEMPLATE_DIR}/impl/impl.tcl.in
+VIVADO_TEMPLATE_PROGRAM=${VIVADO_TEMPLATE_DIR}/program/program.tcl.in
 
 #############
 # tcl
@@ -49,11 +50,13 @@ VIVADO_BD_GENERATE_DIR=${VIVADO_DIR}/.gen/bd
 VIVADO_FILELIST_SCRIPT=${VIVADO_SCRIPT_DIR}/filelist.tcl
 VIVADO_SYN_SCRIPT=${VIVADO_SCRIPT_DIR}/run_synth.tcl
 VIVADO_IMPL_SCRIPT=${VIVADO_SCRIPT_DIR}/run_impl.tcl
+VIVADO_PROG_SCRIPT=${VIVADO_SCRIPT_DIR}/run_program.tcl
 VIVADO_FUNCTIONS_SCRIPT=${VIVADO_SCRIPT_DIR}/functions.tcl
 
 # entry files
 VIVADO_SYNTH_ENTRY=${VIVADO_DIR}/run_synth
 VIVADO_IMPL_ENTRY=${VIVADO_DIR}/run_impl
+VIVADO_PROG_ENTRY=${VIVADO_DIR}/run_prog
 
 
 ###########################################
@@ -68,6 +71,7 @@ VCS_TEMPLATE_COMPILE=${VCS_TEMPLATE_DIR}/compile.sh.in
 VCS_TEMPLATE_ELABORATE=${VCS_TEMPLATE_DIR}/elaborate.sh.in
 VCS_TEMPLATE_SIMULATE=${VCS_TEMPLATE_DIR}/simulate.sh.in
 VCS_TEMPLATE_VERDI=${VCS_TEMPLATE_DIR}/verdi.sh.in
+VCS_TEMPLATE_DUMP=${VCS_TEMPLATE_DIR}/vcs_dump.v.in
 
 #############
 # tcl
@@ -84,6 +88,7 @@ VCS_ELABORATE_SCRIPT=${VCS_DIR}/elaborate.sh
 VCS_SIMUALTE_SCRIPT=${VCS_DIR}/simulate.sh
 VCS_VERDI_SCRIPT=${VCS_DIR}/verdi.sh
 VCS_SIM_FILELIST=${VCS_DIR}/filelist.txt
+VCS_DUMP_SCRIPT=${VCS_DIR}/vcs_dump.v
 
 ###########################################
 # for iverilog generator
@@ -94,6 +99,7 @@ VCS_SIM_FILELIST=${VCS_DIR}/filelist.txt
 IVERILOG_TEMPLATE_DIR=${SCRIPT_DIR}/template/iverilog
 IVERILOG_TEMPLATE_COMPILE=${IVERILOG_TEMPLATE_DIR}/compile.sh.in
 IVERILOG_TEMPLATE_SIMULATE=${IVERILOG_TEMPLATE_DIR}/simulate.sh.in
+IVERILOG_TEMPLATE_DUMP=${IVERILOG_TEMPLATE_DIR}/iverilog_dump.v.in
 
 
 # vcs script directories
@@ -104,3 +110,4 @@ IVERILOG_COMPILE_SCRIPT=${IVERILOG_DIR}/compile.sh
 IVERILOG_SIMUALTE_SCRIPT=${IVERILOG_DIR}/simulate.sh
 IVERILOG_GTKWAVE_SCRIPT=${IVERILOG_DIR}/gtkwave.sh
 IVERILOG_SIM_FILELIST=${IVERILOG_DIR}/filelist.txt
+IVERILOG_DUMP_SCRIPT=${IVERILOG_DIR}/iverilog_dump.v

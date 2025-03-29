@@ -1,10 +1,7 @@
 #################################################
 #             project properties
 #################################################
-set device              $VIVADO_DEVICE
-set package             $VIVADO_PACKAGE
-set speed               $VIVADO_SPEED
-set part                \$device\$package\$speed
+set part                $VIVADO_PART
 
 set SrcDir              $SRC_DIR
 set SynOutputDir        $VIVADO_SYN_DIR

@@ -1,0 +1,8 @@
+module iverilog_dump();
+
+initial begin
+    \$dumpfile(\"${SIM_TOP_MODULE}.vcd\");
+    \$dumpvars(0,${SIM_TOP_MODULE});
+end
+
+endmodule

@@ -1,4 +1,4 @@
-`timescale  1ns/1ns
+`timescale  1ns/1ps
 
 module  tb_blink();
     wire    [3:0]   led_out     ;
@@ -25,19 +25,5 @@ module  tb_blink();
         .sys_rst_n(sys_rst_n),
         .led_out(led_out)
     );
-
-    `ifdef __IVERILOG__
-    initial begin
-        $dumpfile("tb_blink.vcd");        //生成的vcd文件名称
-        $dumpvars(0, tb_blink);    //tb模块名称
-    end 
-    `endif
-
-    `ifdef __VCS__
-    initial begin
-        $fsdbDumpfile("tb_blink.fsdb");
-        $fsdbDumpvars("+all");
-    end
-    `endif
 
 endmodule

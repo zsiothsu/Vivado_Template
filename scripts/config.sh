@@ -53,7 +53,7 @@ SIM_TOP_MODULE=tb_blink
 # simulation tools
 # 1. vcs
 # 2. iverilog
-SIM_TOOL=vcs
+SIM_TOOL=iverilog
 
 #############
 # vcs configuration

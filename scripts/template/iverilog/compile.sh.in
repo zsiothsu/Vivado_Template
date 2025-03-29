@@ -3,4 +3,5 @@ iverilog \\
 -D __IVERILOG__ \\
 -y ${VIVADO_BIN_DIR}/../data/verilog/src/unisims \\
 -f ${IVERILOG_SIM_FILELIST} \\
--s ${IVERILOG_SIM_TOP_MODULE} \\
+-s ${SIM_TOP_MODULE} \\
+-s iverilog_dump \\

@@ -1,0 +1,9 @@
+module vcs_dump();
+
+initial begin
+	\$fsdbDumpfile(\"${SIM_TOP_MODULE}.fsdb\");
+	\$fsdbDumpvars(\"+all\");
+end
+
+endmodule
+

@@ -25,25 +25,6 @@ function vivado_replace_xci_path() {
     done
 }
 
-function vivado_replace_bd_path() {
-    for bd in ${VIVADO_BD_FILE[@]}; do
-        if [[ -f ${SRC_DIR}/${bd} ]]; then
-            bd_file=${SRC_DIR}/${bd}
-            bd_basename=`basename ${bd} .bd`
-            vivado_bd_gen_dir=`echo ${VIVADO_BD_GENERATE_DIR//\//\\\/}`
-            # for json
-            sed -i "s/\"gen_directory\": \".*\"/\"gen_directory\": \"${vivado_bd_gen_dir}\/${bd_basename}\"/g" ${bd_file}
-            sed -i "s/\"OUTPUTDIR\": \[.*\]/\"OUTPUTDIR\": \[ \{ \"value\": \"${vivado_bd_gen_dir}\/${bd_basename}\" \} \]/g" ${bd_file} 
-            # for xml
-            sed -i "s/<spirit:configurableElementValue spirit:referenceId=\"RUNTIME_PARAM.OUTPUTDIR\">.*<\/spirit:configurableElementValue>/<spirit:configurableElementValue spirit:referenceId=\"RUNTIME_PARAM.OUTPUTDIR\">${vivado_bd_gen_dir}\/${bd_basename}<\/spirit:configurableElementValue>/g" ${bd_file}
-            # change to global synthesis
-            sed -i "s/\"synth_flow_mode\": \"Hierarchical\"/\"synth_flow_mode\": \"None\"/g" ${bd_file}
-        else
-            echo -e ${COLOR_ERROR}"[error] file ${SRC_DIR}/${bd} dosen't exist. "${COLOR_RESET}
-        fi
-    done
-}
-
 function vivado_make_directoies() {
     echo -e ${COLOR_INFO}"[info] vivado: make directories"${COLOR_RESET}
     mkdir -p ${VIVADO_DIR}
@@ -75,6 +56,13 @@ function vivado_gen_entry() {
     # generate impl entry
     echo "rm *.jou *.log || echo \"\" > /dev/null" > ${VIVADO_IMPL_ENTRY}
     echo "vivado -mode tcl -source ${VIVADO_IMPL_SCRIPT}" >> ${VIVADO_IMPL_ENTRY}
+
+    # generate program entry
+    echo "vivado -nojournal -nolog -mode batch -source ${VIVADO_PROG_SCRIPT}" >  ${VIVADO_PROG_ENTRY}
+
+    chmod +x ${VIVADO_SYNTH_ENTRY}
+    chmod +x ${VIVADO_IMPL_ENTRY}
+    chmod +x ${VIVADO_PROG_ENTRY}
 }
 
 function vivado_gen_functions() {
@@ -201,17 +189,6 @@ function vivado_gen_synth() {
 
         eval "echo \"${template_generate_xci}\"" >> ${VIVADO_SYN_SCRIPT}
     fi
-    
-    #############
-    # gen read block design
-    #############
-    if [[ -n "${VIVADO_BD_FILE}" ]]; then
-        if [[ -f ${VIVADO_BD_FILE} ]]; then
-            bd_name=`basename ${bd} .bd`
-            bd=\$\{SrcDir\}/${VIVADO_BD_FILE}
-            eval "echo \"${template_read_bd}\"" >> ${VIVADO_SYN_SCRIPT}
-        fi
-    fi
 
     #############
     # gen read xdc
@@ -247,7 +224,7 @@ function vivado_gen_impl() {
     template_property=$(cat ${VIVADO_TEMPLATE_PROPERRTY})
     template_read_xdc_header=$(cat ${VIVADO_TEMPLATE_READ_XDC_HEADER})
     template_read_xdc=$(cat ${VIVADO_TEMPLATE_READ_XDC})
-    template_impl=$(cat ${VIVADO_TEMPLAT_IMPL})
+    template_impl=$(cat ${VIVADO_TEMPLATE_IMPL})
     template_read_checkpoint_header=$(cat ${VIVADO_TEMPLATE_READ_CHECKPOINT_HEADER})
     template_read_checkpoint=$(cat ${VIVADO_TEMPLATE_READ_CHECKPOINT})
     template_read_checkpoint_list=$(cat ${VIVADO_TEMPLATE_READ_CHECKPOINT_LIST})
@@ -317,13 +294,21 @@ function vivado_gen_impl() {
     echo "q" >> ${VIVADO_IMPL_SCRIPT}
 }
 
+function vivado_gen_program() {
+    echo -e ${COLOR_INFO}"[info] vivado: generate program script"${COLOR_RESET}
+
+    template_property=$(cat ${VIVADO_TEMPLATE_PROPERRTY})
+    template_program=$(cat ${VIVADO_TEMPLATE_PROGRAM})
+
+    # generate property
+    eval "echo \"${template_property}\"" > ${VIVADO_PROG_SCRIPT}
+    # generate program script
+    eval "echo \"${template_program}\""  >> ${VIVADO_PROG_SCRIPT}
+}
+
 function vivado_main() {
     if [[ -n "${VIVADO_XCI_FILELIST}" ]]; then
         vivado_replace_xci_path
-    fi
-
-    if [[ -n "${VIVADO_BD_FILE}" ]]; then
-        vivado_replace_bd_path
     fi
 
     vivado_make_directoies
@@ -338,6 +323,7 @@ function vivado_main() {
     fi
 
     vivado_gen_impl
+    vivado_gen_program
 }
 
 function vcs_gen_directry() {
@@ -368,6 +354,11 @@ function _vcs_gen_post_synth_sim_filelist() {
     done
 
     filelist_set="${filelist_set} ${VIVADO_SYN_DIR}/${VIVADO_TOP_MODULES}.post_synth.funcsim_synth_netlist.v"
+
+    # fsdb dump
+    template_dump=$(cat ${VCS_TEMPLATE_DUMP})
+    eval "echo -e \"${template_dump}\"" > ${VCS_DUMP_SCRIPT}
+    filelist_set="${filelist_set} ${VCS_DUMP_SCRIPT}"
 
     filelist_set=( ${filelist_set} )
     echo "" > ${VCS_SIM_FILELIST}
@@ -423,11 +414,19 @@ function _vcs_gen_rtl_sim_filelist() {
     # glbl
     filelist_set="${filelist_set} ${VIVADO_BIN_DIR}/../data/verilog/src/glbl.v"
     
+    # fsdb dump
+    template_dump=$(cat ${VCS_TEMPLATE_DUMP})
+    eval "echo -e \"${template_dump}\"" > ${VCS_DUMP_SCRIPT}
+    filelist_set="${filelist_set} ${VCS_DUMP_SCRIPT}"
+
+
     filelist_set=( ${filelist_set} )
     echo "" > ${VCS_SIM_FILELIST}
     for file in ${filelist_set[*]}; do
         echo ${file} >> ${VCS_SIM_FILELIST}
     done
+
+
 
 }
 
@@ -533,6 +532,11 @@ function _iverilog_gen_rtl_sim_filelist() {
     # glbl
     filelist_set="${filelist_set} ${VIVADO_BIN_DIR}/../data/verilog/src/glbl.v"
 
+    # vcd dump
+    template_dump=$(cat ${IVERILOG_TEMPLATE_DUMP})
+    eval "echo -e \"${template_dump}\"" > ${IVERILOG_DUMP_SCRIPT}
+    filelist_set="${filelist_set} ${IVERILOG_DUMP_SCRIPT}"
+
     filelist_set=( ${filelist_set} )
     echo "" > ${IVERILOG_SIM_FILELIST}
     for file in ${filelist_set[*]}; do
@@ -574,7 +578,7 @@ function iverilog_gen_simulate() {
 function iverilog_gen_gtwave() {
     echo -e ${COLOR_INFO}"[info] iverilog: generate gtkwave script"${COLOR_RESET}
 
-    echo "gtkwave ${IVERILOG_VCD_FILE}" > ${IVERILOG_GTKWAVE_SCRIPT}
+    echo "gtkwave ${SIM_TOP_MODULE}.vcd" > ${IVERILOG_GTKWAVE_SCRIPT}
 
     chmod +x ${IVERILOG_GTKWAVE_SCRIPT}
 }
@@ -592,16 +596,23 @@ function iverilog_main() {
 }
 
 if [[ $# -ge 1 ]]; then
+    if [[ "$1" == "new" ]]; then
+        cp $(dirname $(readlink -f $(which $0)))/config.sh ./
+        exit 0
+    fi
+
     for i in "$@"; do
         echo -e ${COLOR_INFO}"[info] generator: read ${i}"${COLOR_RESET}
         SRC_DIR=$(dirname $(readlink -f ${i}))
         source ${i}
-        source ./template_config.sh
+        source $(dirname $(readlink -f $(which $0)))/template_config.sh
         vivado_main
-        if [[ ${VCS_ENABLE} && ${VCS_ENABLE} -ne 0 ]]; then
+        if [[ ${SIM_TOOL} == "vcs" ]]; then
             vcs_main
-        fi
-        if [[ ${IVERILOG_ENABLE} && ${IVERILOG_ENABLE} -ne 0 ]]; then
+        elif [[ ${SIM_TOOL} == "iverilog" ]]; then
+            iverilog_main
+        else
+            vcs_main
             iverilog_main
         fi
     done

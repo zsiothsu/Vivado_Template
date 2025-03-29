@@ -2,5 +2,12 @@ scripts/*
 !scripts/template
 !scripts/gen_project.sh
 !scripts/template_config.sh
+!scripts/config.sh
+
+example_project/*
+!example_project/rtl
+!example_project/tb
+!example_project/xdc
+!example_project/config.sh
 
 .vscode

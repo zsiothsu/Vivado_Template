@@ -6,4 +6,4 @@ vcs \\
 -debug_access+all \\
 -t ps \\
 -licqueue \\
-${VCS_WORK_LIB_NAME}.${VCS_SIM_TOP_MODULE} ${VCS_WORK_LIB_NAME}.glbl -o ./simv
+${VCS_WORK_LIB_NAME}.${SIM_TOP_MODULE} ${VCS_WORK_LIB_NAME}.glbl ${VCS_WORK_LIB_NAME}.vcs_dump -o ./simv

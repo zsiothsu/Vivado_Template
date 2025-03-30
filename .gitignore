@@ -1,6 +1,6 @@
 scripts/*
 !scripts/template
-!scripts/gen_project.sh
+!scripts/vivado_project
 !scripts/template_config.sh
 !scripts/config.sh
 

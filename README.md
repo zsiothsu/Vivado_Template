@@ -1,114 +1,123 @@
-# Vivado Template
+# Vivado Template  
 
-[简体中文](README_zh_CN.md)
+[中文文档](README_zh_CN.md)  
 
-## Introduction
+## Introduction  
 
-This is a template for automatically generating Vivado project scripts, which also includes simulation scripts for iverilog and vcs. It enables simulation, synthesis, and implementation without the need to open the GUI.
+This is a template for automating Vivado project script generation, which also includes simulation scripts for iverilog and VCS. It enables simulation, synthesis, and implementation without opening the GUI.  
 
-## Project Structure
+## Project Structure  
 
-The project structure is as follows:
+The project structure is as follows:  
 
-```
-.
-├── example_project         # Example project
-│   ├── rtl                 # Project's RTL files
-│   ├── tb                  # Testbenches
-│   ├── xdc                 # Constraint files
-│   └── config.sh           # Project configuration
-└── scripts
-    ├── template            # Script templates
-    ├── gen_project.sh      # Script generation script
-    └── template_config.sh  # Template configuration
+```  
+.  
+├── example_project         # Example project  
+│   ├── rtl                 # RTL files  
+│   ├── tb                  # Testbench  
+│   ├── xdc                 # Constraint files  
+│   └── config.sh           # Project configuration  
+└── scripts  
+    ├── template            # Script templates  
+    ├── vivado_project      # Entry script for generation  
+    ├── config.sh           # Blank configuration template  
+    └── template_config.sh  # Template configuration  
+```  
 
-```
+The `example_project` folder can be replaced with your own project. Use the `vivado_project new` command to generate a `config.sh` in your project.  
+The `scripts` folder contains generation scripts and templates. `vivado_project` is the entry script.  
 
-The `example_project` folder can be replaced with your own project by simply copying the `config.sh` over.
+## Usage  
 
-The `scripts` folder contains project generation scripts and some templates. The `gen_project.sh` is the entry file.
+### Installation
 
-## Usage
+Run `install.sh` to install the project.  
+If you do not have root permissions, copy the `scripts` folder to your project directory and invoke `vivado_project` using relative paths.  
 
-### Configuring the Project
+### Configuration  
 
-Modify `config.sh` according to your project, referring to the internal guides. All paths are relative to the `config.sh` path.
+In your project folder, generate `config.sh` using:  
 
-### Generating Scripts
+```shell  
+vivado_project new  
+```  
 
-Generate the scripts using the following command, of course, remember to replace `config.sh` with your own.
+Modify `config.sh` according to your project (refer to the comments inside the file). All paths are relative to the generated `config.sh`.  
 
-```shell
-cd scripts
-./gen_project.sh ../example_project/config.sh
-```
+### Script Generation  
 
-After generation, a folder named by your project (set inside `config.sh`) will be created under the `scripts` directory.
+Run the following command to generate scripts (ensure `config.sh` is properly configured):  
 
-```
-scripts
-├── Your-Project-Name   # Generated scripts folder
-│   ├── iverilog
-│   ├── vcs
-│   └── vivado
-├── template            # Script templates
-├── gen_project.sh      # Script generation script
-└── template_config.sh  # Template configuration
-```
+```shell  
+vivado_project ./config.sh  
+```  
 
-Here, `vivado` contains the synthesis and implementation scripts for Vivado, `vcs` contains the simulation scripts for vcs, and `iverilog` contains the simulation scripts for iverilog.
+After execution, a folder named after your project (defined in `config.sh`) will be created in the current directory:  
 
-### Vivado Synthesis and Implementation
+```  
+Current Directory  
+├── [Project Name]          # Generated scripts folder  
+│   ├── iverilog  
+│   ├── vcs  
+│   └── vivado  
+└── config.sh               # Generated configuration file  
+```  
 
-Use the following commands for synthesis and implementation:
+- `vivado`: Contains Vivado synthesis and implementation scripts.  
+- `vcs`: Contains VCS simulation scripts.  
+- `iverilog`: Contains iverilog simulation scripts.  
 
-```
-cd Your-Project-Name/vivado
+### Vivado Synthesis and Implementation  
 
-# Synthesis project
-source run_synth
+Run the following commands:  
 
-# Implementation project
-source run_impl 
-```
+```shell  
+cd [Project Name]/vivado  
 
-The results are located in `Your-Project-Name/vivado/SynOutputDir` and `Your-Project-Name/vivado/ImplOutputDir` respectively.
+# Synthesis  
+source run_synth  
 
-### Vcs Simulation
+# Implementation  
+source run_impl  
+```  
 
-If you are performing post-synthesis simulation or your project contains IP cores, be sure to perform Vivado synthesis first.
+Results are saved in `[Project Name]/vivado/SynOutputDir` and `[Project Name]/vivado/ImplOutputDir`.  
 
-Use the following commands for simulation:
+### VCS Simulation  
 
-```shell
-cd Your-Project-Name/vcs
+**Note**: If post-synthesis simulation is required or the project includes IP cores, complete Vivado synthesis first.  
 
-./compile.sh
-./elaborate.sh
-./simulate.sh
-```
+Run the following commands:  
 
-Use the following command to open verdi to view the waveforms:
+```shell  
+cd [Project Name]/vcs  
 
-```shell
-./verdi.sh
-```
+./compile.sh  
+./elaborate.sh  
+./simulate.sh  
+```  
 
-### Iverilog Simulation
+To open Verdi for waveform viewing:  
 
-If you are performing post-synthesis simulation or your project contains IP cores, be sure to perform Vivado synthesis first.
+```shell  
+./verdi.sh  
+```  
 
-Use the following commands for simulation:
+### Iverilog Simulation  
 
-```shell
-cd Your-Project-Name/iverilog
+**Note**: If post-synthesis simulation is required or the project includes IP cores, complete Vivado synthesis first.  
 
-./compile.sh
-./simulate.sh
-```
+Run the following commands:  
 
-Use the following command to open gtkwave to view the waveforms:
+```shell  
+cd [Project Name]/iverilog  
 
-```shell
-./gtkwave.sh
-```
+./compile.sh  
+./simulate.sh  
+```  
+
+To open GTKWave for waveform viewing:  
+
+```shell  
+./gtkwave.sh  
+```  
